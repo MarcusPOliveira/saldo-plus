@@ -10,7 +10,7 @@ export const currencies = [
     locale: 'de-DE',
   },
   {
-    value: 'REAL',
+    value: 'BRL',
     label: 'R$ Real',
     locale: 'pt-BR',
   },
