@@ -5,7 +5,7 @@ import { UserSettings } from '@prisma/client'
 import { differenceInDays, startOfMonth } from 'date-fns'
 import { toast } from 'sonner'
 
-import { StatsCards } from '@/components'
+import { CategoriesStats, StatsCards } from '@/components'
 import { MAX_DATE_RANGE_DAYS } from '@/lib/constants'
 
 import { DateRangePicker } from '../ui/date-range-picker'
@@ -46,6 +46,12 @@ export const Overview = ({ userSettings }: Props) => {
       </div>
       <div className="container flex w-full flex-col gap-2">
         <StatsCards
+          userSettings={userSettings}
+          from={dateRange.from}
+          to={dateRange.to}
+        />
+
+        <CategoriesStats
           userSettings={userSettings}
           from={dateRange.from}
           to={dateRange.to}
