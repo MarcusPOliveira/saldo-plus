@@ -10,6 +10,7 @@ import { Period, Timeframe } from '@/lib/types'
 
 import { Badge } from '../ui/badge'
 import { Card, CardHeader, CardTitle } from '../ui/card'
+import { useQuery } from '@tanstack/react-query'
 
 interface Props {
   userSettings: UserSettings
@@ -26,13 +27,24 @@ export const History = ({ userSettings }: Props) => {
     return GetFormatterForCurrency(userSettings?.currency)
   }, [userSettings?.currency])
 
+  const historyDataQuery = useQuery({
+    queryKey: ['overview', 'history', period, timeframe],
+    queryFn: () =>
+      fetch(
+        `/api/history-data?timeframe=${timeframe}&year=${period.year}&month=${period.month}`
+      ).then((res) => res.json()),
+  })
+
+  const dataAvailable =
+    historyDataQuery.data && historyDataQuery.data?.length > 0
+
   return (
     <div className="container">
       <h2 className="mt-12 text-3xl font-bold">Histórico</h2>
 
-      <Card className="col-span-12 mt-2 w-full">
+      <Card className="w-full col-span-12 mt-2">
         <CardHeader className="gap-2">
-          <CardTitle className="grid grid-flow-row justify-between gap-2 md:grid-flow-col">
+          <CardTitle className="grid justify-between grid-flow-row gap-2 md:grid-flow-col">
             <HistoryPeriodSelector
               period={period}
               setPeriod={setPeriod}
@@ -45,14 +57,14 @@ export const History = ({ userSettings }: Props) => {
                 variant="outline"
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="h-4 w-4 rounded-full bg-emerald-500" />
+                <div className="w-4 h-4 rounded-full bg-emerald-500" />
                 Receitas
               </Badge>
               <Badge
                 variant="outline"
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="h-4 w-4 rounded-full bg-red-500" />
+                <div className="w-4 h-4 bg-red-500 rounded-full" />
                 Despesas
               </Badge>
             </div>
