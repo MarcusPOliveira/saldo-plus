@@ -1,6 +1,7 @@
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { Overview } from '@/components'
 import { Button } from '@/components/ui/button'
 import prisma from '@/lib/prisma'
 
@@ -56,6 +57,7 @@ export default async function Page() {
           </div>
         </div>
       </div>
+      <Overview userSettings={userSettings} />
     </div>
   )
 }

@@ -209,7 +209,6 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                             selected={field.value}
                             onSelect={(value) => {
                               if (!value) return
-                              console.log('calendar', value)
                               field.onChange(value)
                             }}
                             initialFocus
