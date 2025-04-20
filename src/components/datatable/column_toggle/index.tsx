@@ -29,11 +29,11 @@ export function DataTableViewOptions<TData>({
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 />
-          View
+          Editar
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>Alterar colunas</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -42,6 +42,23 @@ export function DataTableViewOptions<TData>({
               typeof column.accessorFn !== 'undefined' && column.getCanHide()
           )
           .map((column) => {
+            const translatedColumnsName = () => {
+              switch (column.id) {
+                case 'category':
+                  return 'Categoria'
+                case 'description':
+                  return 'Descrição'
+                case 'type':
+                  return 'Tipo'
+                case 'amount':
+                  return 'Valor'
+                case 'date':
+                  return 'Data'
+                default:
+                  return column.id
+              }
+            }
+
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
@@ -49,7 +66,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {translatedColumnsName()}
               </DropdownMenuCheckboxItem>
             )
           })}
