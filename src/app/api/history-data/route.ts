@@ -7,8 +7,8 @@ import { z } from 'zod'
 
 const getHistoryDataSchema = z.object({
   timeframe: z.enum(['year', 'month']),
-  year: z.coerce.number().min(0).max(11).default(0),
-  month: z.coerce.number().min(2000).max(3000),
+  year: z.coerce.number().min(2000).max(3000),
+  month: z.coerce.number().min(0).max(11).default(0),
 })
 
 export async function GET(request: Request) {
