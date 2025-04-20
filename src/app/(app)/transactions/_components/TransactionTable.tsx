@@ -14,7 +14,8 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { download, generateCsv, mkConfig } from 'export-to-csv'
+import { ChevronLeft, ChevronRight, DownloadIcon } from 'lucide-react'
 
 import { GetTransactionHistoryResponseType } from '@/app/api/transactions-history/route'
 import { SkeletonWrapper } from '@/components'
@@ -42,7 +43,7 @@ const emptyData: never[] = []
 
 type TransactionHistoryRow = GetTransactionHistoryResponseType[0]
 
-export const columns: ColumnDef<TransactionHistoryRow>[] = [
+const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: 'category',
     header: ({ column }) => (
@@ -116,6 +117,13 @@ export const columns: ColumnDef<TransactionHistoryRow>[] = [
   },
 ]
 
+const csvConfig = mkConfig({
+  fieldSeparator: ';',
+  decimalSeparator: '.',
+  useKeysAsHeaders: true,
+  filename: 'historico-transacoes',
+})
+
 export const TransactionTable = ({ from, to }: Props) => {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -158,6 +166,11 @@ export const TransactionTable = ({ from, to }: Props) => {
     return Array.from(uniqueCategories)
   }, [history?.data])
 
+  const handleExportCSV = (data: never[]) => {
+    const csv = generateCsv(csvConfig)(data)
+    download(csvConfig)(csv)
+  }
+
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
@@ -182,6 +195,41 @@ export const TransactionTable = ({ from, to }: Props) => {
           )}
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto h-8 lg:flex"
+            onClick={() => {
+              const data = table.getFilteredRowModel().rows.map((row) => {
+                const date = new Date(row.original.date)
+                const formattedDate = date.toLocaleDateString('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                })
+                const formattedTime = date.toLocaleTimeString('pt-BR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                })
+                return {
+                  Categoria: row.original.category,
+                  'Ícone da categoria': row.original.categoryIcon,
+                  Descrição: row.original.description,
+                  'Tipo da transação': row.original.type,
+                  Valor: row.original.amount,
+                  'Valor formatado': row.original.formattedAmount,
+                  Data: `${formattedDate} - ${formattedTime}`,
+                }
+              })
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              handleExportCSV(data)
+            }}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Exportar CSV
+          </Button>
           <DataTableViewOptions table={table} />
         </div>
       </div>
