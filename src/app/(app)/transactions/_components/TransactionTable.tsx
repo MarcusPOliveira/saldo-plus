@@ -15,7 +15,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { download, generateCsv, mkConfig } from 'export-to-csv'
-import { ChevronLeft, ChevronRight, DownloadIcon } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  DownloadIcon,
+  MoreHorizontal,
+  TrashIcon,
+} from 'lucide-react'
 
 import { GetTransactionHistoryResponseType } from '@/app/api/transactions-history/route'
 import { SkeletonWrapper } from '@/components'
@@ -23,6 +29,14 @@ import { DataTableColumnHeader } from '@/components/datatable/column_header'
 import { DataTableViewOptions } from '@/components/datatable/column_toggle'
 import { DataTableFacetedFilter } from '@/components/datatable/faceted_filters'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   Table,
   TableBody,
@@ -33,6 +47,8 @@ import {
 } from '@/components/ui/table'
 import { cn } from '@/lib'
 import { DateToUTCDate } from '@/lib/helpers'
+
+import { DeleteTransactionDialog } from './DeleteTransactionDialog'
 
 interface Props {
   from: Date
@@ -115,6 +131,11 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </p>
     ),
   },
+  {
+    id: 'actions',
+    enableHiding: false,
+    cell: ({ row }) => <RowActions transaction={row.original} />,
+  },
 ]
 
 const csvConfig = mkConfig({
@@ -123,6 +144,45 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
   filename: 'historico-transacoes',
 })
+
+const RowActions = ({
+  transaction,
+}: {
+  transaction: TransactionHistoryRow
+}) => {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+  return (
+    <>
+      <DeleteTransactionDialog
+        open={showDeleteDialog}
+        setOpen={setShowDeleteDialog}
+        transactionId={transaction.id}
+      />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="flex items-center gap-2"
+            onSelect={() => {
+              setShowDeleteDialog((prev) => !prev)
+            }}
+          >
+            <TrashIcon className="h-4 w-4 text-muted-foreground" />
+            Excluir
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  )
+}
 
 export const TransactionTable = ({ from, to }: Props) => {
   const [sorting, setSorting] = useState<SortingState>([])
