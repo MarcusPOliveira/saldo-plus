@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -43,9 +43,14 @@ import { CreateCategory } from '../_actions/categories'
 interface Props {
   type: TransactionType
   successCallback: (category: Category) => void
+  trigger?: ReactNode
 }
 
-export const CreateCategoryDialog = ({ type, successCallback }: Props) => {
+export const CreateCategoryDialog = ({
+  type,
+  successCallback,
+  trigger,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const queryClient = useQueryClient()
@@ -103,13 +108,17 @@ export const CreateCategoryDialog = ({ type, successCallback }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
-        >
-          <PlusSquare className="mr-2 h-4 w-4" />
-          Nova categoria
-        </Button>
+        {trigger ? (
+          trigger
+        ) : (
+          <Button
+            variant="ghost"
+            className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
+          >
+            <PlusSquare className="mr-2 h-4 w-4" />
+            Nova categoria
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
