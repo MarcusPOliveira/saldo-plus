@@ -2,22 +2,13 @@
 /* eslint-disable import/order */
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+// import { GeistMono } from 'geist/font/mono'
 
 import { RootProviders } from '@/components/providers/RootProviders'
 
 import './globals.css'
 import { Toaster } from '@/components/ui/sonner'
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
 
 export const metadata: Metadata = {
   title: 'Saldo+',
@@ -38,9 +29,7 @@ export default function RootLayout({
           colorScheme: 'dark',
         }}
       >
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={`${GeistSans.className} antialiased`}>
           <Toaster richColors position="bottom-right" />
           <RootProviders>{children}</RootProviders>
         </body>
