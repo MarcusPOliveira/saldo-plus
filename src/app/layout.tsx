@@ -3,7 +3,7 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 import { GeistSans } from 'geist/font/sans'
-// import { GeistMono } from 'geist/font/mono'
+import { Analytics } from '@vercel/analytics/react'
 
 import { RootProviders } from '@/components/providers/RootProviders'
 
@@ -31,7 +31,10 @@ export default function RootLayout({
       >
         <body className={`${GeistSans.className} antialiased`}>
           <Toaster richColors position="bottom-right" />
-          <RootProviders>{children}</RootProviders>
+          <RootProviders>
+            {children}
+            <Analytics />
+          </RootProviders>
         </body>
       </html>
     </ClerkProvider>
