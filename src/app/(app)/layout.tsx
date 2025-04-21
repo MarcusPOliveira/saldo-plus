@@ -6,7 +6,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="relative flex h-screen w-full flex-col">
       <Navbar />
-      <div className="w-full">{children}</div>
+      <div className="w-full pb-8">{children}</div>
     </div>
   )
 }
