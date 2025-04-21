@@ -17,6 +17,7 @@ import {
 
 import { HistoryPeriodSelector } from '@/app/(app)/dashboard/_components/history_period_selector'
 import { GetHistoryDataResponseType } from '@/app/api/history-data/route'
+import { useMediaQuery } from '@/hooks'
 import { cn } from '@/lib'
 import { GetFormatterForCurrency } from '@/lib/helpers'
 import { Period, Timeframe } from '@/lib/types'
@@ -35,6 +36,9 @@ export const History = ({ userSettings }: Props) => {
     month: new Date().getMonth(),
     year: new Date().getFullYear(),
   })
+
+  const isMobile = useMediaQuery('(max-width: 768px)')
+  console.log('isMobile', isMobile)
 
   const formatter = useMemo(() => {
     return GetFormatterForCurrency(userSettings?.currency)
@@ -172,14 +176,18 @@ export const History = ({ userSettings }: Props) => {
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent className="">
+        <CardContent className="flex flex-col items-center justify-center p-0">
           <SkeletonWrapper isLoading={historyDataQuery.isFetching}>
             {dataAvailable && (
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer
+                width="100%"
+                // className="bg-red-500"
+                height={300}
+              >
                 <BarChart
                   height={300}
                   data={historyDataQuery.data}
-                  barCategoryGap={5}
+                  barCategoryGap={isMobile ? 0 : 5}
                 >
                   <defs>
                     <linearGradient id="incomeBar" x1="0" y1="0" x2="0" y2="1">
@@ -206,7 +214,7 @@ export const History = ({ userSettings }: Props) => {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    padding={{ left: 5, right: 5 }}
+                    padding={{ left: 0, right: 0 }}
                     dataKey={(data) => {
                       const { year, month, day } = data
                       const date = new Date(year, month, day || 1)
@@ -235,6 +243,7 @@ export const History = ({ userSettings }: Props) => {
                     fill="url(#incomeBar)"
                     radius={4}
                     className="cursor-pointer"
+                    barSize={20}
                   />
 
                   <Bar
@@ -243,6 +252,7 @@ export const History = ({ userSettings }: Props) => {
                     fill="url(#expenseBar)"
                     radius={4}
                     className="cursor-pointer"
+                    barSize={20}
                   />
 
                   <Tooltip
