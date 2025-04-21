@@ -111,7 +111,19 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
   )
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        setIsOpen((prev) => !prev)
+        form.reset({
+          amount: 0,
+          description: '',
+          date: new Date(),
+          category: undefined,
+          type,
+        })
+      }}
+    >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
 
       <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg">
@@ -156,7 +168,15 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                 <FormItem>
                   <FormLabel>Valor</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input
+                      type="number"
+                      onFocus={() => {
+                        if (field.value === 0) {
+                          field.onChange('')
+                        }
+                      }}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     Valor da transação (obrigatório)
