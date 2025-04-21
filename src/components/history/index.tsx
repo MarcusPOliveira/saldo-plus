@@ -38,7 +38,6 @@ export const History = ({ userSettings }: Props) => {
   })
 
   const isMobile = useMediaQuery('(max-width: 768px)')
-  console.log('isMobile', isMobile)
 
   const formatter = useMemo(() => {
     return GetFormatterForCurrency(userSettings?.currency)

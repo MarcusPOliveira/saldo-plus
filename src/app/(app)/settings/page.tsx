@@ -33,7 +33,7 @@ function Settings() {
     return (
       <SkeletonWrapper isLoading={categoriesQuery.isLoading}>
         <Card>
-          <CardHeader>
+          <CardHeader className="px-1 md:px-6">
             <CardTitle className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 {type === 'expense' ? (
@@ -54,7 +54,7 @@ function Settings() {
                 type={type}
                 successCallback={() => categoriesQuery.refetch()}
                 trigger={
-                  <Button className="gap-2 text-sm">
+                  <Button className="max-w-[136px] gap-2 text-sm md:max-w-full">
                     <PlusSquare className="mr-2 h-4 w-4" />
                     Nova categoria
                   </Button>
