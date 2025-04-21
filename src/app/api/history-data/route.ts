@@ -1,9 +1,10 @@
-import prisma from '@/lib/prisma'
-import { Period, Timeframe } from '@/lib/types'
 import { currentUser } from '@clerk/nextjs/server'
 import { getDaysInMonth } from 'date-fns'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+
+import prisma from '@/lib/prisma'
+import { Period, Timeframe } from '@/lib/types'
 
 const getHistoryDataSchema = z.object({
   timeframe: z.enum(['year', 'month']),

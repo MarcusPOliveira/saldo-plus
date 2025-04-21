@@ -101,6 +101,9 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
 
       mutate({
         ...values,
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         date: DateToUTCDate(values.date),
       })
     },

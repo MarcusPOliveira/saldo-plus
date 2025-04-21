@@ -2,8 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 
 import { GetHistoryPeriodsResponseType } from '@/app/api/history-periods/route'
 import { SkeletonWrapper } from '@/components'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Period, Timeframe } from '@/lib/types'
 import {
   Select,
   SelectContent,
@@ -11,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Period, Timeframe } from '@/lib/types'
 
 interface Props {
   period: Period

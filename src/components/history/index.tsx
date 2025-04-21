@@ -3,15 +3,8 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { UserSettings } from '@prisma/client'
-
-import { HistoryPeriodSelector } from '@/app/(app)/dashboard/_components/history_period_selector'
-import { GetFormatterForCurrency } from '@/lib/helpers'
-import { Period, Timeframe } from '@/lib/types'
-
-import { Badge } from '../ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { useQuery } from '@tanstack/react-query'
-import { SkeletonWrapper } from '../skeleton_wrapper'
+import CountUp from 'react-countup'
 import {
   Bar,
   BarChart,
@@ -21,9 +14,16 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+
+import { HistoryPeriodSelector } from '@/app/(app)/dashboard/_components/history_period_selector'
 import { GetHistoryDataResponseType } from '@/app/api/history-data/route'
 import { cn } from '@/lib'
-import CountUp from 'react-countup'
+import { GetFormatterForCurrency } from '@/lib/helpers'
+import { Period, Timeframe } from '@/lib/types'
+
+import { SkeletonWrapper } from '../skeleton_wrapper'
+import { Badge } from '../ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 
 interface Props {
   userSettings: UserSettings
@@ -51,6 +51,7 @@ export const History = ({ userSettings }: Props) => {
   const dataAvailable =
     historyDataQuery.data &&
     historyDataQuery.data?.length > 0 &&
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     !historyDataQuery?.data?.includes('"code"')
 
@@ -80,7 +81,7 @@ export const History = ({ userSettings }: Props) => {
       <div className="flex items-center gap-2">
         <div className={cn('h-4 w-4 rounded-full', bgColor)} />
 
-        <div className="flex justify-between w-full">
+        <div className="flex w-full justify-between">
           <p className="text-sm text-muted-foreground">{label}</p>
 
           <div className={cn('text-sm font-bold', textColor)}>
@@ -104,7 +105,7 @@ export const History = ({ userSettings }: Props) => {
     numberFormatter,
   }: {
     active: boolean
-    payload: any
+    payload: { payload: { income: number; expense: number } }[]
     numberFormatter: Intl.NumberFormat
   }) => {
     if (!active || !payload || payload.length === 0) return null
@@ -145,9 +146,9 @@ export const History = ({ userSettings }: Props) => {
     <div className="container">
       <h2 className="mt-12 text-3xl font-bold">Histórico</h2>
 
-      <Card className="w-full col-span-12 mt-2">
+      <Card className="col-span-12 mt-2 w-full">
         <CardHeader className="gap-2">
-          <CardTitle className="grid justify-between grid-flow-row gap-2 md:grid-flow-col">
+          <CardTitle className="grid grid-flow-row justify-between gap-2 md:grid-flow-col">
             <HistoryPeriodSelector
               period={period}
               setPeriod={setPeriod}
@@ -160,14 +161,14 @@ export const History = ({ userSettings }: Props) => {
                 variant="outline"
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="w-4 h-4 rounded-full bg-emerald-500" />
+                <div className="h-4 w-4 rounded-full bg-emerald-500" />
                 Receitas
               </Badge>
               <Badge
                 variant="outline"
                 className="flex items-center gap-2 text-sm"
               >
-                <div className="w-4 h-4 bg-red-500 rounded-full" />
+                <div className="h-4 w-4 rounded-full bg-red-500" />
                 Despesas
               </Badge>
             </div>
@@ -252,7 +253,13 @@ export const History = ({ userSettings }: Props) => {
                       <CustomTooltip
                         numberFormatter={formatter}
                         active={!!props.active}
-                        payload={props.payload}
+                        payload={(props.payload || []).filter(
+                          (
+                            item
+                          ): item is {
+                            payload: { income: number; expense: number }
+                          } => item.payload !== undefined
+                        )}
                       />
                     )}
                   />
