@@ -336,7 +336,7 @@ export const TransactionTable = ({ from, to }: Props) => {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Nenhum dado encontrado
                   </TableCell>
                 </TableRow>
               )}
