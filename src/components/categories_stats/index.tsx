@@ -59,7 +59,7 @@ export const CategoriesStats = ({ userSettings, from, to }: Props) => {
           {filteredData.length === 0 && (
             <div className="flex h-60 w-full flex-col items-center justify-center">
               Não há dados para exibir
-              <p className="text-sm text-muted-foreground">
+              <p className="px-2 text-center text-sm text-muted-foreground">
                 Tente selecionar um intervalo de datas diferente ou adicionar
                 uma nova {type === 'income' ? 'receita' : 'despesa'}!
               </p>
