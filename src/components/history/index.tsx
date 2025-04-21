@@ -55,8 +55,6 @@ export const History = ({ userSettings }: Props) => {
     // @ts-ignore
     !historyDataQuery?.data?.includes('"code"')
 
-  console.log(historyDataQuery.data)
-
   const TooltipRow = ({
     label,
     value,
@@ -89,7 +87,7 @@ export const History = ({ userSettings }: Props) => {
               duration={0.5}
               preserveValue
               end={value}
-              decimals={0}
+              decimals={2}
               formattingFn={formattingFn}
               className="text-sm"
             />

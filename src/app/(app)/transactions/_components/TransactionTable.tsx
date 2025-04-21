@@ -195,7 +195,6 @@ export const TransactionTable = ({ from, to }: Props) => {
         `/api/transactions-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`
       ).then((res) => res.json()),
   })
-  console.log('history', history.data)
 
   const table = useReactTable({
     data: history.data || emptyData,
