@@ -1,5 +1,6 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import {
   ArrowRight,
   CreditCard,
@@ -16,6 +17,12 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 export default function LandingPage() {
+  const checkSession = useQuery({
+    queryKey: ['user'],
+    queryFn: async () =>
+      await fetch('/api/check-session').then((res) => res.json()),
+  })
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,13 +53,17 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <ThemeSwitch />
             <Link
-              href="/sign-in"
+              href={checkSession.data?.isLoggedIn ? '/dashboard' : '/sign-in'}
               className="text-sm font-medium transition-colors hover:text-orange-500"
             >
               Entrar
             </Link>
             <Button className="hidden bg-orange-500 hover:bg-orange-600 md:flex">
-              <Link href="/sign-up">Cadastre-se Grátis</Link>
+              <Link
+                href={checkSession.data?.isLoggedIn ? '/dashboard' : '/sign-up'}
+              >
+                Cadastre-se Grátis
+              </Link>
             </Button>
           </div>
         </div>
@@ -75,7 +86,9 @@ export default function LandingPage() {
                   size="lg"
                   className="bg-orange-500 hover:bg-orange-600"
                   onClick={() => {
-                    redirect('/sign-up')
+                    checkSession.data?.isLoggedIn
+                      ? redirect('/dashboard')
+                      : redirect('/sign-up')
                   }}
                 >
                   Comece Agora
@@ -289,7 +302,9 @@ export default function LandingPage() {
                   variant="secondary"
                   className="bg-white text-orange-500 hover:bg-orange-50 dark:text-secondary"
                   onClick={() => {
-                    redirect('/sign-up')
+                    checkSession.data?.isLoggedIn
+                      ? redirect('/dashboard')
+                      : redirect('/sign-up')
                   }}
                 >
                   Comece Gratuitamente
