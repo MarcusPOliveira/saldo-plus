@@ -114,7 +114,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             Criar uma nova
@@ -130,7 +130,10 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            className="min-w-screen max-w-fit space-y-6 overflow-x-hidden md:space-y-4 md:overflow-x-visible"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <FormField
               name="description"
               control={form.control}
@@ -162,12 +165,12 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
               )}
             />
 
-            <div className="flex items-start justify-between gap-2">
+            <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:gap-2">
               <FormField
                 name="category"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Categoria</FormLabel>
                     <FormControl>
                       <CategoryPicker
@@ -186,7 +189,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                 name="date"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Data</FormLabel>
                     <FormControl>
                       <Popover>
@@ -229,7 +232,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
             </div>
           </form>
         </Form>
-        <DialogFooter>
+        <DialogFooter className="mt-4 gap-2 md:mt-0 md:gap-0">
           <DialogClose asChild>
             <Button
               variant="secondary"
