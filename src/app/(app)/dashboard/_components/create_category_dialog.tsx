@@ -159,7 +159,7 @@ export const CreateCategoryDialog = ({
                 <FormItem>
                   <FormLabel>Ícone</FormLabel>
                   <FormControl>
-                    <Popover>
+                    <Popover modal>
                       <PopoverTrigger asChild>
                         <Button variant="outline" className="h-[100px] w-full">
                           {form.watch('icon') ? (

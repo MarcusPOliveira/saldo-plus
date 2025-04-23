@@ -65,7 +65,7 @@ export const CategoryPicker = ({ type, onChange }: Props) => {
   )
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen} onOpenChange={setIsOpen} modal>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
