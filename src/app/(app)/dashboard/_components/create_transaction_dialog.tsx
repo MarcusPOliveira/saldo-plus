@@ -212,7 +212,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                   <FormItem className="flex flex-col">
                     <FormLabel>Data</FormLabel>
                     <FormControl>
-                      <Popover>
+                      <Popover modal>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
@@ -222,9 +222,11 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                                 !field.value && 'text-muted-foreground'
                               )}
                             >
-                              {field.value
-                                ? format(field.value, 'PPP')
-                                : 'Selecione uma data'}
+                              {field.value ? (
+                                format(field.value, 'PPP')
+                              ) : (
+                                <span>Selecione uma data</span>
+                              )}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
