@@ -106,7 +106,17 @@ export const CreateCategoryDialog = ({
   )
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={() => {
+        setIsOpen((prev) => !prev)
+        form.reset({
+          name: '',
+          icon: '',
+          type,
+        })
+      }}
+    >
       <DialogTrigger asChild>
         {trigger ? (
           trigger
@@ -120,7 +130,7 @@ export const CreateCategoryDialog = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg">
+      <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:flex md:w-full md:max-w-lg md:flex-col md:items-center">
         <DialogHeader>
           <DialogTitle>
             Criar uma nova
@@ -135,7 +145,10 @@ export const CreateCategoryDialog = ({
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            className="w-full min-w-full max-w-fit space-y-6 overflow-x-hidden md:space-y-8 md:overflow-x-visible"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <FormField
               name="name"
               control={form.control}
@@ -181,14 +194,22 @@ export const CreateCategoryDialog = ({
                           )}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full">
-                        <Picker
-                          data={data}
-                          theme={theme.resolvedTheme}
-                          onEmojiSelect={(emoji: { native: string }) =>
-                            field.onChange(emoji.native)
-                          }
-                        />
+                      <PopoverContent
+                        sideOffset={window.innerWidth <= 375 ? -140 : -20}
+                        // className="flex max-h-[300px] w-[400px] items-center justify-center overflow-y-auto p-0"
+                        className="flex w-[380px] items-center justify-center p-0"
+                      >
+                        <div className="max-h-[420px] overflow-y-auto">
+                          <Picker
+                            data={data}
+                            locale="pt"
+                            dynamicWidth={false}
+                            theme={theme.resolvedTheme}
+                            onEmojiSelect={(emoji: { native: string }) =>
+                              field.onChange(emoji.native)
+                            }
+                          />
+                        </div>
                       </PopoverContent>
                     </Popover>
                   </FormControl>
@@ -200,7 +221,7 @@ export const CreateCategoryDialog = ({
             />
           </form>
         </Form>
-        <DialogFooter className="mt-4 gap-2 md:mt-0 md:gap-0">
+        <DialogFooter className="mt-4 gap-2 md:mt-0 md:w-full md:gap-4">
           <DialogClose asChild>
             <Button
               variant="secondary"
