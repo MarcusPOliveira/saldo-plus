@@ -182,8 +182,8 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
             e.currentTarget.selectionEnd === e.currentTarget.value.length)
         ) {
           e.preventDefault()
-          if (field === 'month') dayRef.current?.focus()
-          if (field === 'day') yearRef.current?.focus()
+          if (field === 'month') yearRef.current?.focus()
+          if (field === 'day') monthRef.current?.focus()
         }
       } else if (e.key === 'ArrowLeft') {
         if (
@@ -192,8 +192,9 @@ const DateInput: React.FC<DateInputProps> = ({ value, onChange }) => {
             e.currentTarget.selectionEnd === e.currentTarget.value.length)
         ) {
           e.preventDefault()
-          if (field === 'day') monthRef.current?.focus()
-          if (field === 'year') dayRef.current?.focus()
+          if (field === 'day') dayRef.current?.focus()
+          if (field === 'month') dayRef.current?.focus()
+          if (field === 'year') monthRef.current?.focus()
         }
       }
     }
