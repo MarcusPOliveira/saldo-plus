@@ -78,15 +78,15 @@ interface Preset {
 
 // Define presets
 const PRESETS: Preset[] = [
-  { name: 'today', label: 'Today' },
-  { name: 'yesterday', label: 'Yesterday' },
-  { name: 'last7', label: 'Last 7 days' },
-  { name: 'last14', label: 'Last 14 days' },
-  { name: 'last30', label: 'Last 30 days' },
-  { name: 'thisWeek', label: 'This Week' },
-  { name: 'lastWeek', label: 'Last Week' },
-  { name: 'thisMonth', label: 'This Month' },
-  { name: 'lastMonth', label: 'Last Month' },
+  { name: 'today', label: 'Hoje' },
+  { name: 'yesterday', label: 'Ontem' },
+  { name: 'last7', label: 'Últimos 7 dias' },
+  { name: 'last14', label: 'Últimos 14 dias' },
+  { name: 'last30', label: 'Últimos 30 dias' },
+  { name: 'thisWeek', label: 'Esta Semana' },
+  { name: 'lastWeek', label: 'Semana Passada' },
+  { name: 'thisMonth', label: 'Este Mês' },
+  { name: 'lastMonth', label: 'Mês Passado' },
 ]
 
 /** The DateRangePicker component allows a user to select a range of dates */
@@ -99,7 +99,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
   initialCompareTo,
   onUpdate,
   align = 'end',
-  locale = 'en-US',
+  locale = 'pt-BR',
   showCompare = true,
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
@@ -554,7 +554,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
             }}
             variant="ghost"
           >
-            Cancel
+            Cancelar
           </Button>
           <Button
             onClick={() => {
@@ -567,7 +567,7 @@ export const DateRangePicker: FC<DateRangePickerProps> & {
               }
             }}
           >
-            Update
+            Aplicar
           </Button>
         </div>
       </PopoverContent>
