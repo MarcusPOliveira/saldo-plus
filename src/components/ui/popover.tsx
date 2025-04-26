@@ -19,6 +19,8 @@ const PopoverContent = React.forwardRef<
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}
+      autoFocus={false}
+      onOpenAutoFocus={(e) => e.preventDefault()}
       align={align}
       sideOffset={sideOffset}
       className={cn(
