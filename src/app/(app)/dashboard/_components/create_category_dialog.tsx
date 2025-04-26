@@ -120,7 +120,7 @@ export const CreateCategoryDialog = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             Criar uma nova
@@ -200,7 +200,7 @@ export const CreateCategoryDialog = ({
             />
           </form>
         </Form>
-        <DialogFooter>
+        <DialogFooter className="mt-4 gap-2 md:mt-0 md:gap-0">
           <DialogClose asChild>
             <Button
               variant="secondary"
