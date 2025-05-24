@@ -58,6 +58,7 @@ export const StatsCards = ({ userSettings, from, to }: Props) => {
         <div className="flex flex-col items-start gap-0">
           <p className="text-muted-foreground">{title}</p>
           <CountUp
+            duration={0.5}
             preserveValue
             redraw={false}
             end={value}

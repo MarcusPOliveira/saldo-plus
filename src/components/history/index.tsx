@@ -178,11 +178,7 @@ export const History = ({ userSettings }: Props) => {
         <CardContent className="flex flex-col items-center justify-center p-0">
           <SkeletonWrapper isLoading={historyDataQuery.isFetching}>
             {dataAvailable && (
-              <ResponsiveContainer
-                width="100%"
-                // className="bg-red-500"
-                height={300}
-              >
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   height={300}
                   data={historyDataQuery.data}
