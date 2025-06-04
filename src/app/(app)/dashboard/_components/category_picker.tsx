@@ -27,12 +27,13 @@ import { CreateCategoryDialog } from './create_category_dialog'
 
 interface Props {
   type: TransactionType
+  value?: string
   onChange: (value: string) => void
 }
 
-export const CategoryPicker = ({ type, onChange }: Props) => {
+export const CategoryPicker = ({ type, value, onChange }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [value, setValue] = useState('')
+  const [valueState, setValueState] = useState(value ?? '')
 
   const categoriesQuery = useQuery({
     queryKey: ['categories', type],
@@ -41,21 +42,21 @@ export const CategoryPicker = ({ type, onChange }: Props) => {
   })
 
   const selectedCategory = categoriesQuery.data?.find(
-    (category: Category) => category.name === value
+    (category: Category) => category.name === valueState
   )
 
   const successCallback = useCallback(
     (category: Category) => {
-      setValue(category.name)
+      setValueState(category.name)
       setIsOpen((prev) => !prev)
     },
-    [setValue, setIsOpen]
+    [setValueState, setIsOpen]
   )
 
   useEffect(() => {
-    if (!value) return
-    onChange(value)
-  }, [onChange, value])
+    if (!valueState) return
+    onChange(valueState)
+  }, [onChange, valueState])
 
   const CategoryRow = ({ category }: { category: Category }) => (
     <div className="flex items-center gap-2">
@@ -98,7 +99,7 @@ export const CategoryPicker = ({ type, onChange }: Props) => {
                   <CommandItem
                     key={category.name}
                     onSelect={() => {
-                      setValue(category.name)
+                      setValueState(category.name)
                       setIsOpen((prev) => !prev)
                     }}
                   >
@@ -106,7 +107,7 @@ export const CategoryPicker = ({ type, onChange }: Props) => {
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4 opacity-0',
-                        value === category.name && 'opacity-100'
+                        valueState === category.name && 'opacity-100'
                       )}
                     />
                   </CommandItem>

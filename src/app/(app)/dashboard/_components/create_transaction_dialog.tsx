@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -41,24 +41,35 @@ import { TransactionType } from '@/lib/types'
 import { createTransactionSchema, CreateTransactionSchemaType } from '@/schema'
 
 import { CategoryPicker } from './category_picker'
-import { CreateTransaction } from '../_actions/transactions'
+import { CreateTransaction, EditTransaction } from '../_actions/transactions'
 
 interface Props {
   trigger: ReactNode
   type: TransactionType
+  isEditing?: boolean
+  transaction?: CreateTransactionSchemaType
 }
 
-export const CreateTransactionDialog = ({ trigger, type }: Props) => {
+export const CreateTransactionDialog = ({
+  trigger,
+  type,
+  isEditing = false,
+  transaction,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const queryClient = useQueryClient()
+
+  console.log('transaction', transaction)
 
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(createTransactionSchema),
     defaultValues: {
-      amount: 0,
-      description: '',
-      date: new Date(),
-      category: '',
-      type,
+      amount: isEditing ? transaction?.amount : 0,
+      description: isEditing ? transaction?.description : '',
+      date: isEditing ? transaction?.date : new Date(),
+      category: isEditing ? transaction?.category : '',
+      type: isEditing ? transaction?.type : type,
     },
   })
 
@@ -69,14 +80,19 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
     [form]
   )
 
-  const queryClient = useQueryClient()
+  const mutationFn = isEditing ? EditTransaction : CreateTransaction
 
   const { mutate, isPending } = useMutation({
-    mutationFn: CreateTransaction,
+    mutationFn,
     onSuccess: () => {
-      toast.success('Transação criada com sucesso 🎉', {
-        id: 'create-transaction',
-      })
+      toast.success(
+        isEditing
+          ? 'Transação editada com sucesso ✏️'
+          : 'Transação criada com sucesso 🎉',
+        {
+          id: 'create-transaction',
+        }
+      )
       form.reset({
         amount: 0,
         description: '',
@@ -95,9 +111,10 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
 
   const onSubmit = useCallback(
     (values: CreateTransactionSchemaType) => {
-      toast.loading('Salvando transação...', {
-        id: 'create-transaction',
-      })
+      toast.loading(
+        isEditing ? 'Editando transação...' : 'Salvando transação...',
+        { id: 'create-transaction' }
+      )
 
       mutate({
         ...values,
@@ -105,31 +122,49 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         date: DateToUTCDate(values.date),
+        id: transaction?.id,
       })
     },
-    [mutate]
+    [mutate, isEditing, transaction?.id]
   )
+
+  useEffect(() => {
+    if (isEditing && transaction && isOpen) {
+      form.reset({
+        amount: transaction.amount,
+        description: transaction.description,
+        date: transaction.date,
+        category: transaction.category,
+        type: transaction.type,
+      })
+    }
+  }, [isEditing, transaction, isOpen, form])
 
   return (
     <Dialog
       open={isOpen}
       onOpenChange={() => {
         setIsOpen((prev) => !prev)
-        form.reset({
-          amount: 0,
-          description: '',
-          date: new Date(),
-          category: undefined,
-          type,
-        })
+        if (!open) {
+          form.reset({
+            amount: 0,
+            description: '',
+            date: new Date(),
+            category: undefined,
+            type,
+          })
+        }
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
 
-      <DialogContent className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg">
+      <DialogContent
+        onOpenAutoFocus={isEditing ? (e) => e.preventDefault() : undefined}
+        className="w-11/12 max-w-md rounded-lg p-4 md:w-full md:max-w-lg"
+      >
         <DialogHeader>
           <DialogTitle>
-            Criar uma nova
+            {isEditing ? 'Editar' : 'Criar uma nova'}
             <span
               className={cn(
                 'm-1',
@@ -143,7 +178,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
 
         <Form {...form}>
           <form
-            className="min-w-screen max-w-fit space-y-6 overflow-x-hidden md:space-y-4 md:overflow-x-visible"
+            className="min-w-full max-w-fit space-y-6 overflow-x-hidden md:space-y-4 md:overflow-x-visible"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -195,6 +230,7 @@ export const CreateTransactionDialog = ({ trigger, type }: Props) => {
                     <FormControl>
                       <CategoryPicker
                         type={type}
+                        value={field.value}
                         onChange={handleCategoryChange}
                       />
                     </FormControl>

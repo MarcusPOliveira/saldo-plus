@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DownloadIcon,
+  Edit,
   MoreHorizontal,
   TrashIcon,
 } from 'lucide-react'
@@ -49,6 +50,7 @@ import { cn } from '@/lib'
 import { DateToUTCDate } from '@/lib/helpers'
 
 import { DeleteTransactionDialog } from './DeleteTransactionDialog'
+import { CreateTransactionDialog } from '../../dashboard/_components/create_transaction_dialog'
 
 interface Props {
   from: Date
@@ -57,7 +59,7 @@ interface Props {
 
 const emptyData: never[] = []
 
-type TransactionHistoryRow = GetTransactionHistoryResponseType[0]
+export type TransactionHistoryRow = GetTransactionHistoryResponseType[0]
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
@@ -169,6 +171,25 @@ const RowActions = ({
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <CreateTransactionDialog
+            isEditing
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            transaction={transaction}
+            trigger={
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onSelect={(e) => {
+                  e.preventDefault()
+                }}
+              >
+                <Edit className="h-4 w-4 text-muted-foreground" />
+                Editar
+              </DropdownMenuItem>
+            }
+            type={transaction.type === 'income' ? 'income' : 'expense'}
+          />
+
           <DropdownMenuItem
             className="flex items-center gap-2"
             onSelect={() => {

@@ -72,6 +72,4 @@ export async function DeleteTransaction(transactionId: string) {
       },
     }),
   ])
-
-  // return transaction
 }
