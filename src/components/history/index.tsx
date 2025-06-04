@@ -271,7 +271,7 @@ export const History = ({ userSettings }: Props) => {
             )}
 
             {!dataAvailable && (
-              <Card className="flex h-[300px] flex-col items-center justify-center bg-background">
+              <Card className="flex h-[300px] w-full flex-col items-center justify-center border-none">
                 Nenhum dado disponível para o período selecionado.
                 <p className="text-sm text-muted-foreground">
                   Tente selecionar um período diferente, ou adicione uma nova
