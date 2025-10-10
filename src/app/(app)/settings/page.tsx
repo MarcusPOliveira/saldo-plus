@@ -54,9 +54,10 @@ function Settings() {
                 type={type}
                 successCallback={() => categoriesQuery.refetch()}
                 trigger={
-                  <Button className="max-w-[136px] gap-2 text-sm md:max-w-full">
-                    <PlusSquare className="mr-2 h-4 w-4" />
-                    Nova categoria
+                  <Button className="gap-2 text-sm">
+                    <PlusSquare className="h-4 w-4" />
+                    <span className="hidden sm:inline">Nova categoria</span>
+                    <span className="sm:hidden">Nova</span>
                   </Button>
                 }
               />
@@ -125,10 +126,10 @@ function Settings() {
   return (
     <>
       <div className="border-b bg-card">
-        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
+        <div className="container flex flex-wrap items-center justify-between gap-4 py-8">
           <div>
-            <p className="text-3xl font-bold">Configurações</p>
-            <p className="text-muted-foreground">
+            <p className="text-2xl font-bold md:text-3xl">Configurações</p>
+            <p className="text-sm text-muted-foreground md:text-base">
               Gerencie as configurações da sua conta e suas categorias
             </p>
           </div>

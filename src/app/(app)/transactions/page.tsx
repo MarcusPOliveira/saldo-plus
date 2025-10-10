@@ -21,12 +21,14 @@ function Transactions() {
   return (
     <>
       <div className="border-b bg-card">
-        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
+        <div className="container flex flex-wrap items-center justify-between gap-4 py-8">
           <div>
-            <p className="text-3xl font-bold">Histórico de transações</p>
+            <p className="text-2xl font-bold md:text-3xl">
+              Histórico de transações
+            </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
             <DateRangePicker
               initialDateFrom={dateRange.from}
               initialDateTo={dateRange.to}
@@ -48,9 +50,10 @@ function Transactions() {
               trigger={
                 <Button
                   variant="outline"
-                  className="border-emerald-500 bg-emerald-950 text-white hover:bg-emerald-700 hover:text-white"
+                  className="flex-1 border-emerald-500 bg-emerald-950 text-white hover:bg-emerald-700 hover:text-white sm:flex-none"
                 >
-                  Nova receita 🤑
+                  <span className="hidden sm:inline">Nova receita 🤑</span>
+                  <span className="sm:hidden">Receita 🤑</span>
                 </Button>
               }
               type="income"
@@ -60,9 +63,10 @@ function Transactions() {
               trigger={
                 <Button
                   variant="outline"
-                  className="border-rose-500 bg-rose-950 text-white hover:bg-rose-700 hover:text-white"
+                  className="flex-1 border-rose-500 bg-rose-950 text-white hover:bg-rose-700 hover:text-white sm:flex-none"
                 >
-                  Nova despesa 💸
+                  <span className="hidden sm:inline">Nova despesa 💸</span>
+                  <span className="sm:hidden">Despesa 💸</span>
                 </Button>
               }
               type="expense"
