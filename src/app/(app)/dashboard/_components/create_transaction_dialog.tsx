@@ -101,8 +101,12 @@ export const CreateTransactionDialog = ({
         type,
       })
 
+      // Invalidate all related queries to update the UI
       queryClient.invalidateQueries({
         queryKey: ['overview'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['transactions'],
       })
 
       setIsOpen((prev) => !prev)
