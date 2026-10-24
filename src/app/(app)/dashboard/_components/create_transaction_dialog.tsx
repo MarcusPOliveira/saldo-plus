@@ -3,7 +3,8 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Bank } from '@prisma/client'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { CalendarIcon, Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -35,7 +36,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib'
+import { PAYMENT_METHODS } from '@/lib/constants'
 import { DateToUTCDate } from '@/lib/helpers'
 import { TransactionType } from '@/lib/types'
 import { createTransactionSchema, CreateTransactionSchemaType } from '@/schema'
@@ -60,16 +69,26 @@ export const CreateTransactionDialog = ({
 
   const queryClient = useQueryClient()
 
-  console.log('transaction', transaction)
+  // Fetch banks for expense transactions
+  const banksQuery = useQuery<Bank[]>({
+    queryKey: ['banks'],
+    queryFn: () => fetch('/api/banks').then((res) => res.json()),
+    enabled: type === 'expense',
+  })
 
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(createTransactionSchema),
     defaultValues: {
       amount: isEditing ? transaction?.amount : 0,
-      description: isEditing ? transaction?.description : '',
-      date: isEditing ? transaction?.date : new Date(),
+      description: isEditing ? transaction?.description || '' : '',
+      date:
+        isEditing && transaction?.date
+          ? new Date(transaction.date)
+          : new Date(),
       category: isEditing ? transaction?.category : '',
       type: isEditing ? transaction?.type : type,
+      bankId: isEditing ? transaction?.bankId : undefined,
+      paymentMethod: isEditing ? transaction?.paymentMethod : undefined,
     },
   })
 
@@ -99,6 +118,8 @@ export const CreateTransactionDialog = ({
         date: new Date(),
         category: undefined,
         type,
+        bankId: undefined,
+        paymentMethod: undefined,
       })
 
       // Invalidate all related queries to update the UI
@@ -109,7 +130,7 @@ export const CreateTransactionDialog = ({
         queryKey: ['transactions'],
       })
 
-      setIsOpen((prev) => !prev)
+      setIsOpen(false)
     },
   })
 
@@ -122,9 +143,6 @@ export const CreateTransactionDialog = ({
 
       mutate({
         ...values,
-
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         date: DateToUTCDate(values.date),
         id: transaction?.id,
       })
@@ -136,10 +154,12 @@ export const CreateTransactionDialog = ({
     if (isEditing && transaction && isOpen) {
       form.reset({
         amount: transaction.amount,
-        description: transaction.description,
-        date: transaction.date,
+        description: transaction.description || '',
+        date: new Date(transaction.date),
         category: transaction.category,
         type: transaction.type,
+        bankId: transaction.bankId || undefined,
+        paymentMethod: transaction.paymentMethod || undefined,
       })
     }
   }, [isEditing, transaction, isOpen, form])
@@ -147,8 +167,8 @@ export const CreateTransactionDialog = ({
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={() => {
-        setIsOpen((prev) => !prev)
+      onOpenChange={(open) => {
+        setIsOpen(open)
         if (!open) {
           form.reset({
             amount: 0,
@@ -156,6 +176,8 @@ export const CreateTransactionDialog = ({
             date: new Date(),
             category: undefined,
             type,
+            bankId: undefined,
+            paymentMethod: undefined,
           })
         }
       }}
@@ -292,6 +314,78 @@ export const CreateTransactionDialog = ({
                 )}
               />
             </div>
+
+            {type === 'expense' && (
+              <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:gap-2">
+                <FormField
+                  name="paymentMethod"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Método de pagamento</FormLabel>
+                      <Select
+                        onValueChange={(val) =>
+                          field.onChange(val === 'none' ? null : val)
+                        }
+                        value={field.value || 'none'}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="none">Nenhum</SelectItem>
+                          {PAYMENT_METHODS.map((method) => (
+                            <SelectItem key={method.value} value={method.value}>
+                              {method.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Como você pagou? (opcional)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="bankId"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Banco</FormLabel>
+                      <Select
+                        onValueChange={(val) =>
+                          field.onChange(val === 'none' ? null : val)
+                        }
+                        value={field.value || 'none'}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="Selecione" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="none">Nenhum</SelectItem>
+                          {banksQuery.data?.map((bank) => (
+                            <SelectItem key={bank.id} value={bank.id}>
+                              {bank.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormDescription>
+                        Selecione o banco (opcional)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </form>
         </Form>
         <DialogFooter className="mt-4 gap-2 md:mt-0 md:gap-0">

@@ -4,9 +4,9 @@ import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 import prisma from '@/lib/prisma'
-import { CreateCategorySchemaType, createTransactionSchema } from '@/schema'
+import { CreateTransactionSchemaType, createTransactionSchema } from '@/schema'
 
-export async function CreateTransaction(form: CreateCategorySchemaType) {
+export async function CreateTransaction(form: CreateTransactionSchemaType) {
   const parsedBody = createTransactionSchema.safeParse(form)
 
   if (!parsedBody.success) throw new Error(parsedBody.error.message)
@@ -14,7 +14,8 @@ export async function CreateTransaction(form: CreateCategorySchemaType) {
   const user = await currentUser()
   if (!user) return redirect('/sign-in')
 
-  const { amount, category, date, description, type } = parsedBody.data
+  const { amount, category, date, description, type, bankId, paymentMethod } =
+    parsedBody.data
   const categoryRow = await prisma.category.findFirst({
     where: {
       userId: user.id,
@@ -37,6 +38,8 @@ export async function CreateTransaction(form: CreateCategorySchemaType) {
         type,
         category: categoryRow.name,
         categoryIcon: categoryRow.icon,
+        bankId: bankId || null,
+        paymentMethod: paymentMethod || null,
       },
     }),
 
@@ -96,7 +99,7 @@ export async function CreateTransaction(form: CreateCategorySchemaType) {
   ])
 }
 
-export async function EditTransaction(form: CreateCategorySchemaType) {
+export async function EditTransaction(form: CreateTransactionSchemaType) {
   const parsedBody = createTransactionSchema.safeParse(form)
 
   if (!parsedBody.success) throw new Error(parsedBody.error.message)
@@ -104,7 +107,16 @@ export async function EditTransaction(form: CreateCategorySchemaType) {
   const user = await currentUser()
   if (!user) return redirect('/sign-in')
 
-  const { id, amount, category, date, description, type } = parsedBody.data
+  const {
+    id,
+    amount,
+    category,
+    date,
+    description,
+    type,
+    bankId,
+    paymentMethod,
+  } = parsedBody.data
 
   const categoryRow = await prisma.category.findFirst({
     where: {
@@ -139,6 +151,8 @@ export async function EditTransaction(form: CreateCategorySchemaType) {
         type,
         category: categoryRow.name,
         categoryIcon: categoryRow.icon,
+        bankId: bankId || null,
+        paymentMethod: paymentMethod || null,
       },
     }),
 

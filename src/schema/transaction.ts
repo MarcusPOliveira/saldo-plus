@@ -7,6 +7,8 @@ export const createTransactionSchema = z.object({
   date: z.coerce.date(),
   category: z.string(),
   type: z.union([z.literal('income'), z.literal('expense')]),
+  bankId: z.string().nullable().optional(),
+  paymentMethod: z.string().nullable().optional(),
 })
 
 export type CreateTransactionSchemaType = z.infer<

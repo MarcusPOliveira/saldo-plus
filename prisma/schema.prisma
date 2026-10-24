@@ -9,9 +9,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  // url       = env("POSTGRES_PRISMA_URL")
+  url      = env("DATABASE_URL")
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model UserSettings {
@@ -29,17 +30,31 @@ model Category {
   @@unique([name, userId, type])
 }
 
+model Bank {
+  id             String   @id @default(uuid())
+  createdAt      DateTime @default(now())
+  userId         String
+  name           String
+  cardLimit      Float?
+  hasCard        Boolean  @default(false)
+  invoiceDueDate Int?
+
+  @@unique([name, userId])
+}
+
 model Transaction {
-  id           String   @id @default(uuid())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  amount       Float
-  description  String?
-  date         DateTime
-  userId       String
-  type         String   @default("income")
-  category     String
-  categoryIcon String
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  amount        Float
+  description   String?
+  date          DateTime
+  userId        String
+  type          String   @default("income")
+  category      String
+  categoryIcon  String
+  bankId        String?
+  paymentMethod String?
 }
 
 model MonthHistory {
