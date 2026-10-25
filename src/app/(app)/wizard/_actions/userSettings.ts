@@ -1,8 +1,8 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { updateUserCurrencySchema } from '@/schema'
 
@@ -15,7 +15,7 @@ export async function UpdateUserCurrency(currency: string) {
     throw parsedBody.error
   }
 
-  const user = await currentUser()
+  const user = await getCurrentUser()
   if (!user) {
     redirect('/sign-in')
   }

@@ -60,7 +60,7 @@ export default function LandingPage() {
             </Link>
             <Button className="hidden bg-orange-500 hover:bg-orange-600 md:flex">
               <Link
-                href={checkSession.data?.isLoggedIn ? '/dashboard' : '/sign-up'}
+                href={checkSession.data?.isLoggedIn ? '/dashboard' : '/sign-in'}
               >
                 Cadastre-se Grátis
               </Link>
@@ -88,7 +88,7 @@ export default function LandingPage() {
                   onClick={() => {
                     checkSession.data?.isLoggedIn
                       ? redirect('/dashboard')
-                      : redirect('/sign-up')
+                      : redirect('/sign-in')
                   }}
                 >
                   Comece Agora
@@ -304,7 +304,7 @@ export default function LandingPage() {
                   onClick={() => {
                     checkSession.data?.isLoggedIn
                       ? redirect('/dashboard')
-                      : redirect('/sign-up')
+                      : redirect('/sign-in')
                   }}
                 >
                   Comece Gratuitamente

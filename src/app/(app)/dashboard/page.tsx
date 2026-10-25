@@ -1,14 +1,14 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 import { History, Overview } from '@/components'
 import { Button } from '@/components/ui/button'
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
 import { CreateTransactionDialog } from './_components/create_transaction_dialog'
 
 export default async function Page() {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) {
     redirect('/sign-in')
@@ -24,13 +24,13 @@ export default async function Page() {
     redirect('/wizard')
   }
 
+  const firstName = user.name ? user.name.split(' ')[0] : 'Usuário'
+
   return (
     <div className="h-full bg-background">
       <div className="border-b bg-card">
         <div className="container flex w-full flex-wrap items-center justify-between gap-4 py-8">
-          <p className="text-xl font-bold md:text-2xl">
-            Olá, {user.firstName}! 👋
-          </p>
+          <p className="text-xl font-bold md:text-2xl">Olá, {firstName}! 👋</p>
 
           <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
             <CreateTransactionDialog

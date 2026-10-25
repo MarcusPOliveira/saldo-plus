@@ -1,13 +1,12 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { Prisma } from '@prisma/client'
 import { redirect } from 'next/navigation'
-import { z } from 'zod'
 
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { createBankSchema, deleteBankSchema } from '@/schema'
 
 export async function GET(request: Request) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 
@@ -24,7 +23,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 
@@ -67,7 +66,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 

@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 
-import { UserButton } from '@clerk/nextjs'
 import { Menu } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -9,6 +8,7 @@ import { usePathname } from 'next/navigation'
 import { Logo, ThemeSwitch } from '@/components'
 import { cn } from '@/lib/utils'
 
+import { UserButton } from './user_button'
 import { Button, buttonVariants } from '../ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '../ui/sheet'
 
@@ -81,7 +81,7 @@ export const Navbar = () => {
           </div>
           <div className="flex items-center gap-2">
             <ThemeSwitch />
-            <UserButton afterSignOutUrl="/sign-in" />
+            <UserButton />
           </div>
         </nav>
       </div>
@@ -123,7 +123,7 @@ export const Navbar = () => {
 
           <div className="flex items-center gap-2">
             <ThemeSwitch />
-            <UserButton afterSignOutUrl="/sign-in" />
+            <UserButton />
           </div>
         </nav>
       </div>

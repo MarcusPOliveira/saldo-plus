@@ -1,12 +1,12 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { getCurrentUser } from '@/lib/auth'
 import { GetFormatterForCurrency } from '@/lib/helpers'
 import prisma from '@/lib/prisma'
 import { OverviewQuerySchema } from '@/schema'
 
 export async function GET(request: Request) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 

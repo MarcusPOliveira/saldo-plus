@@ -1,9 +1,9 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { getCurrentUser } from '@/lib/auth'
 
 export async function GET() {
-  const userId = await currentUser()
+  const user = await getCurrentUser()
 
-  if (userId) {
+  if (user) {
     return Response.json({ isLoggedIn: true }, { status: 200 })
   } else {
     return Response.json({ isLoggedIn: false }, { status: 200 })

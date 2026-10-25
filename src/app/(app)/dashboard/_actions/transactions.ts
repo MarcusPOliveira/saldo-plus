@@ -1,8 +1,8 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { CreateTransactionSchemaType, createTransactionSchema } from '@/schema'
 
@@ -11,7 +11,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   if (!parsedBody.success) throw new Error(parsedBody.error.message)
 
-  const user = await currentUser()
+  const user = await getCurrentUser()
   if (!user) return redirect('/sign-in')
 
   const { amount, category, date, description, type, bankId, paymentMethod } =
@@ -104,7 +104,7 @@ export async function EditTransaction(form: CreateTransactionSchemaType) {
 
   if (!parsedBody.success) throw new Error(parsedBody.error.message)
 
-  const user = await currentUser()
+  const user = await getCurrentUser()
   if (!user) return redirect('/sign-in')
 
   const {
