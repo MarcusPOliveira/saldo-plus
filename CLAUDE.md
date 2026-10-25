@@ -20,6 +20,14 @@ npm start
 
 # Lint and auto-fix issues
 npm run lint
+
+# Run unit tests (Vitest)
+npm run test
+npm run test:watch
+
+# Run E2E tests (Playwright)
+npm run test:e2e
+npm run test:e2e:ui
 ```
 
 ## Database

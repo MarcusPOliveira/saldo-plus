@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -55,11 +59,13 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@rocketseat/eslint-config": "^2.2.2",
     "@tanstack/react-query-devtools": "^5.67.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^8",
     "eslint-config-next": "15.5.28",
     "globals": "^15.14.0",
@@ -67,7 +73,10 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "prisma": "^6.4.1",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^5.0.5",
+    "vitest-mock-extended": "^5.1.1"
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"
