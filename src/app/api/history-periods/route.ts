@@ -1,10 +1,10 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
 export async function GET(request: Request) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 

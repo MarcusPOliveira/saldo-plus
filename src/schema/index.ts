@@ -1,4 +1,5 @@
-export * from './userSettings'
-export * from './transaction'
+export * from './bank'
 export * from './categories'
 export * from './overview'
+export * from './transaction'
+export * from './userSettings'

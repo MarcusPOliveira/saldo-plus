@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   DownloadIcon,
+  Edit,
   MoreHorizontal,
   TrashIcon,
 } from 'lucide-react'
@@ -46,9 +47,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { cn } from '@/lib'
+import { PAYMENT_METHODS } from '@/lib/constants'
 import { DateToUTCDate } from '@/lib/helpers'
 
 import { DeleteTransactionDialog } from './DeleteTransactionDialog'
+import { CreateTransactionDialog } from '../../dashboard/_components/create_transaction_dialog'
 
 interface Props {
   from: Date
@@ -57,7 +60,11 @@ interface Props {
 
 const emptyData: never[] = []
 
-type TransactionHistoryRow = GetTransactionHistoryResponseType[0]
+export type TransactionHistoryRow = GetTransactionHistoryResponseType[0]
+
+const PAYMENT_METHOD_MAP = new Map<string, string>(
+  PAYMENT_METHODS.map((method) => [method.value, method.label])
+)
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
@@ -121,6 +128,40 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     },
   },
   {
+    accessorKey: 'bankName',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Banco" />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+    cell: ({ row }) => (
+      <div className="text-muted-foreground">
+        {row.original.bankName || '-'}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'paymentMethod',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Pagamento" />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+    cell: ({ row }) => {
+      const paymentMethod = row.original.paymentMethod
+      if (!paymentMethod) {
+        return <div className="text-muted-foreground">-</div>
+      }
+      return (
+        <span className="rounded-md bg-secondary px-2 py-1 text-xs font-medium">
+          {PAYMENT_METHOD_MAP.get(paymentMethod) || paymentMethod}
+        </span>
+      )
+    },
+  },
+  {
     accessorKey: 'amount',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Valor" />
@@ -169,6 +210,32 @@ const RowActions = ({
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Ações</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <CreateTransactionDialog
+            isEditing
+            transaction={{
+              id: transaction.id,
+              amount: transaction.amount,
+              description: transaction.description || undefined,
+              date: new Date(transaction.date),
+              category: transaction.category,
+              type: transaction.type as 'income' | 'expense',
+              bankId: transaction.bankId,
+              paymentMethod: transaction.paymentMethod,
+            }}
+            trigger={
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onSelect={(e) => {
+                  e.preventDefault()
+                }}
+              >
+                <Edit className="h-4 w-4 text-muted-foreground" />
+                Editar
+              </DropdownMenuItem>
+            }
+            type={transaction.type === 'income' ? 'income' : 'expense'}
+          />
+
           <DropdownMenuItem
             className="flex items-center gap-2"
             onSelect={() => {
@@ -225,7 +292,37 @@ export const TransactionTable = ({ from, to }: Props) => {
     return Array.from(uniqueCategories)
   }, [history?.data])
 
-  const handleExportCSV = (data: never[]) => {
+  const banksOptions = useMemo(() => {
+    const banksMap = new Map()
+    history?.data?.forEach((transaction) => {
+      if (transaction.bankName) {
+        banksMap.set(transaction.bankName, {
+          value: transaction.bankName,
+          label: transaction.bankName,
+        })
+      }
+    })
+
+    return Array.from(banksMap.values())
+  }, [history?.data])
+
+  const paymentMethodsOptions = useMemo(() => {
+    const methodsMap = new Map()
+    history?.data?.forEach((transaction) => {
+      if (transaction.paymentMethod) {
+        methodsMap.set(transaction.paymentMethod, {
+          value: transaction.paymentMethod,
+          label:
+            PAYMENT_METHOD_MAP.get(transaction.paymentMethod) ||
+            transaction.paymentMethod,
+        })
+      }
+    })
+
+    return Array.from(methodsMap.values())
+  }, [history?.data])
+
+  const handleExportCSV = (data: Record<string, string | number>[]) => {
     const csv = generateCsv(csvConfig)(data)
     download(csvConfig)(csv)
   }
@@ -233,7 +330,7 @@ export const TransactionTable = ({ from, to }: Props) => {
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {table.getColumn('category') && (
             <DataTableFacetedFilter
               title="Categoria"
@@ -252,6 +349,23 @@ export const TransactionTable = ({ from, to }: Props) => {
               ]}
             />
           )}
+
+          {table.getColumn('bankName') && banksOptions.length > 0 && (
+            <DataTableFacetedFilter
+              title="Banco"
+              column={table.getColumn('bankName')}
+              options={banksOptions}
+            />
+          )}
+
+          {table.getColumn('paymentMethod') &&
+            paymentMethodsOptions.length > 0 && (
+              <DataTableFacetedFilter
+                title="Pagamento"
+                column={table.getColumn('paymentMethod')}
+                options={paymentMethodsOptions}
+              />
+            )}
         </div>
         <div className="flex flex-wrap gap-2">
           <Button
@@ -274,15 +388,18 @@ export const TransactionTable = ({ from, to }: Props) => {
                 return {
                   Categoria: row.original.category,
                   'Ícone da categoria': row.original.categoryIcon,
-                  Descrição: row.original.description,
+                  Descrição: row.original.description || '',
                   'Tipo da transação': row.original.type,
                   Valor: row.original.amount,
                   'Valor formatado': row.original.formattedAmount,
+                  Banco: row.original.bankName || '',
+                  'Método de pagamento': row.original.paymentMethod
+                    ? PAYMENT_METHOD_MAP.get(row.original.paymentMethod) ||
+                      row.original.paymentMethod
+                    : '',
                   Data: `${formattedDate} - ${formattedTime}`,
                 }
               })
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
               handleExportCSV(data)
             }}
           >

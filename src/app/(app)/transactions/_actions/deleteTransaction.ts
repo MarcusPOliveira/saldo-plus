@@ -1,12 +1,12 @@
 'use server'
 
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
 export async function DeleteTransaction(transactionId: string) {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) return redirect('/sign-in')
 
@@ -72,6 +72,4 @@ export async function DeleteTransaction(transactionId: string) {
       },
     }),
   ])
-
-  // return transaction
 }

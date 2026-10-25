@@ -22,9 +22,9 @@ export const Overview = ({ userSettings }: Props) => {
 
   return (
     <>
-      <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
-        <h2 className="text-3xl font-bold">Visão geral</h2>
-        <div className="flex items-center gap-3">
+      <div className="container flex flex-wrap items-end justify-between gap-4 py-6">
+        <h2 className="text-2xl font-bold md:text-3xl">Visão geral</h2>
+        <div className="flex w-full items-center gap-3 sm:w-auto">
           <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}

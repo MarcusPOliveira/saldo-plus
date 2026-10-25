@@ -178,11 +178,7 @@ export const History = ({ userSettings }: Props) => {
         <CardContent className="flex flex-col items-center justify-center p-0">
           <SkeletonWrapper isLoading={historyDataQuery.isFetching}>
             {dataAvailable && (
-              <ResponsiveContainer
-                width="100%"
-                // className="bg-red-500"
-                height={300}
-              >
+              <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   height={300}
                   data={historyDataQuery.data}
@@ -275,7 +271,7 @@ export const History = ({ userSettings }: Props) => {
             )}
 
             {!dataAvailable && (
-              <Card className="flex h-[300px] flex-col items-center justify-center bg-background">
+              <Card className="flex h-[300px] w-full flex-col items-center justify-center border-none">
                 Nenhum dado disponível para o período selecionado.
                 <p className="text-sm text-muted-foreground">
                   Tente selecionar um período diferente, ou adicione uma nova

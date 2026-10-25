@@ -1,14 +1,14 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 import { History, Overview } from '@/components'
 import { Button } from '@/components/ui/button'
+import { getCurrentUser } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
 import { CreateTransactionDialog } from './_components/create_transaction_dialog'
 
 export default async function Page() {
-  const user = await currentUser()
+  const user = await getCurrentUser()
 
   if (!user) {
     redirect('/sign-in')
@@ -24,20 +24,23 @@ export default async function Page() {
     redirect('/wizard')
   }
 
+  const firstName = user.name ? user.name.split(' ')[0] : 'Usuário'
+
   return (
     <div className="h-full bg-background">
       <div className="border-b bg-card">
-        <div className="container flex w-full flex-wrap items-center justify-between gap-6 py-8">
-          <p className="text-2xl font-bold">Olá, {user.firstName}! 👋</p>
+        <div className="container flex w-full flex-wrap items-center justify-between gap-4 py-8">
+          <p className="text-xl font-bold md:text-2xl">Olá, {firstName}! 👋</p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
             <CreateTransactionDialog
               trigger={
                 <Button
                   variant="outline"
-                  className="border-emerald-500 bg-emerald-950 text-white hover:bg-emerald-700 hover:text-white"
+                  className="flex-1 border-emerald-500 bg-emerald-950 text-white hover:bg-emerald-700 hover:text-white sm:flex-none"
                 >
-                  Nova receita 🤑
+                  <span className="hidden sm:inline">Nova receita 🤑</span>
+                  <span className="sm:hidden">Receita 🤑</span>
                 </Button>
               }
               type="income"
@@ -47,9 +50,10 @@ export default async function Page() {
               trigger={
                 <Button
                   variant="outline"
-                  className="border-rose-500 bg-rose-950 text-white hover:bg-rose-700 hover:text-white"
+                  className="flex-1 border-rose-500 bg-rose-950 text-white hover:bg-rose-700 hover:text-white sm:flex-none"
                 >
-                  Nova despesa 💸
+                  <span className="hidden sm:inline">Nova despesa 💸</span>
+                  <span className="sm:hidden">Despesa 💸</span>
                 </Button>
               }
               type="expense"
